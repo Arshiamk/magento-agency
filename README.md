@@ -1,69 +1,41 @@
 # Magento Agency Demo
 
-A reference architecture for modern Adobe Commerce / Magento Open Source projects. This repository demonstrates clean architecture, API-first integration patterns, and Hyvä-compatible frontend development.
+Production-style Magento Open Source demo by Arshia, with custom agency modules, custom storefront branding, and Docker-based local setup.
 
-## Features
+## What is included
 
-- **Modular Architecture**: core, integrations, and feature modules separated by domain.
-- **Robust Integrations**:
-  - **ERP**: Push-based Order Sync using queues.
-  - **PIM**: Pull-based Product Import with backoff strategies.
-  - **Webhooks**: Secure, signature-validated event merging.
-- **Hyvä Compatibility**: Lightweight frontend patterns using Tailwind CSS and Alpine.js.
-- **DevOps Ready**: Docker-based local environment, GitHub Actions for CI.
+- Agency modules under `app/code/Agency`
+- Custom theme under `app/design/frontend/Agency/hyva-demo`
+- Docker environment (`docker-compose.yml`, `dev/nginx`, `dev/php`)
+- One-command Windows setup script: `scripts/setup.ps1`
 
-## Quick Start
+## Quick Start (Windows PowerShell)
 
-### Prerequisites
+1. Clone:
+```powershell
+git clone https://github.com/Arshiamk/magento-agency.git
+cd magento-agency
+```
 
-- Docker & Docker Compose
-- PHP 8.2+
-- Composer 2
+2. Setup:
+```powershell
+./scripts/setup.ps1
+```
 
-### Installation
+3. Open:
+- Frontend: `http://localhost:8080`
+- Admin: `http://localhost:8080/admin`
 
-#### Mac/Linux
+For a full rebuild:
+```powershell
+./scripts/setup.ps1 -Reset
+```
 
-1.  **Clone the repo**
-    ```bash
-    git clone https://github.com/agency/magento-agency-demo.git
-    cd magento-agency-demo
-    ```
-2.  **Start and Install**
-    ```bash
-    make up
-    make install
-    ```
+## Notes
 
-#### Windows (PowerShell)
-
-1.  **Clone the repo**
-    ```powershell
-    git clone https://github.com/agency/magento-agency-demo.git
-    cd magento-agency-demo
-    ```
-2.  **Run Setup Script**
-    ```powershell
-    ./scripts/setup.ps1
-    ```
-    For a clean rebuild from scratch (drops DB volumes), run:
-    ```powershell
-    ./scripts/setup.ps1 -Reset
-    ```
-
-### Accessing the Site
-
-- **Frontend**: http://localhost:8080/
-- **Admin**: http://localhost:8080/admin (User: `admin`, Pass: `Password123`)
-- **Mailhog** (Emails): http://localhost:8025/ (if enabled)
-
-## Documentation
-
-- [Architecture Overview](docs/architecture.md)
-- [Integration Guide](docs/integrations.md)
-- [Security Model](docs/security.md)
-- [API Reference](docs/api.md)
+- This repository is intentionally trimmed to keep focus on working application code and local developer experience.
+- Heavy Magento test suites and distribution-only boilerplate files were removed from version control.
 
 ## License
 
-MIT
+See `LICENSE`.
