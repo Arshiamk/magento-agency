@@ -1,0 +1,35 @@
+name: Agency Demo CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: "8.2"
+          extensions: bcmath, ctype, curl, dom, fileinfo, gd, iconv, intl, json, libxml, mbstring, openssl, pdo, pdo_mysql, simplexml, soap, sockets, tokenizer, xmlwriter, xsl, zip
+
+      - name: Validate composer.json
+        run: composer validate
+
+      - name: Install dependencies
+        run: composer install --prefer-dist --no-progress
+
+      - name: Validated Coding Standards (PHPCS)
+        run: vendor/bin/phpcs --standard=PSR12 app/code/Agency
+
+      - name: Static Analysis (PHPStan)
+        run: vendor/bin/phpstan analyse -l 1 app/code/Agency
+
+      - name: Unit Tests
+        run: vendor/bin/phpunit -c dev/tests/unit/phpunit.xml.dist

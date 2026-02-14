@@ -1,0 +1,67 @@
+services:
+  app:
+    image: markoshust/magento-php:8.2-fpm
+    volumes:
+      - ./:/var/www/html
+      - ./dev/php/php-fpm.conf:/usr/local/etc/php-fpm.conf
+      - ./dev/php/zz-docker.conf:/usr/local/etc/php-fpm.d/zz-docker.conf
+      - ./dev/php/99-local.ini:/usr/local/etc/php/conf.d/99-local.ini
+    restart: always
+    depends_on:
+      - db
+      - redis
+      - elasticsearch
+    ports:
+      - "8080:8000"
+      - "9000:9000"
+    networks:
+      - magento
+
+  web:
+    image: markoshust/magento-nginx:1.18
+    network_mode: "service:app"
+    volumes:
+      - ./:/var/www/html
+      - ./dev/nginx/default.conf:/etc/nginx/conf.d/default.conf
+    depends_on:
+      - app
+
+  db:
+    image: mariadb:10.4
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: magento
+      MYSQL_USER: magento
+      MYSQL_PASSWORD: magento
+    ports:
+      - "3306:3306"
+    volumes:
+      - db-data:/var/lib/mysql
+    networks:
+      - magento
+
+  redis:
+    image: redis:6.2
+    ports:
+      - "6379:6379"
+    networks:
+      - magento
+
+  elasticsearch:
+    image: markoshust/magento-elasticsearch:7.17
+    environment:
+      - "discovery.type=single-node"
+    ports:
+      - "9200:9200"
+    volumes:
+      - elasticsearch-data:/usr/share/elasticsearch/data
+    networks:
+      - magento
+
+networks:
+  magento:
+    driver: bridge
+
+volumes:
+  db-data:
+  elasticsearch-data:

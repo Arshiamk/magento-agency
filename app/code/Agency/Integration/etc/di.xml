@@ -1,0 +1,8 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+    <preference for="Agency\Integration\Api\OrderSyncInterface" type="Agency\Integration\Model\Erp\OrderPublisher"/>
+    <preference for="Agency\Integration\Api\ProductImportInterface" type="Agency\Integration\Model\Pim\ProductImporter"/>
+    <preference for="Agency\Integration\Api\StatusInterface" type="Agency\Integration\Model\Api\Status"/>
+    <preference for="Agency\Integration\Api\Data\IntegrationResultInterface" type="Agency\Integration\Model\IntegrationResult"/>
+    <preference for="Agency\Integration\Api\Data\OrderExportMessageInterface" type="Agency\Integration\Model\Queue\Message\OrderExportMessage"/>
+</config>

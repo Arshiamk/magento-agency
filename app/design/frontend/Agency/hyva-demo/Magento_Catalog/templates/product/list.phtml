@@ -1,0 +1,46 @@
+<?php
+/** @var \Magento\Catalog\Block\Product\ListProduct $block */
+?>
+<?php
+$_productCollection = $block->getLoadedProductCollection();
+$_helper = $this->helper(Magento\Catalog\Helper\Output::class);
+?>
+<?php if (!$_productCollection->count()): ?>
+    <div class="message info empty">
+        <div>
+            <?= $escaper->escapeHtml(__('We can\'t find products matching the selection.')) ?>
+        </div>
+    </div>
+<?php else: ?>
+    <div class="products wrapper grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+        <?php foreach ($_productCollection as $_product): ?>
+            <div class="product-item bg-white shadow rounded-lg overflow-hidden hover:shadow-lg transition-shadow duration-300">
+                <a href="<?= $escaper->escapeUrl($_product->getProductUrl()) ?>" class="block relative aspect-w-1 aspect-h-1">
+                    <?= $block->getImage($_product, 'category_page_grid')->toHtml() ?>
+                </a>
+                <div class="p-4">
+                    <strong class="product-item-name block text-lg font-medium text-gray-900 truncate">
+                        <a href="<?= $escaper->escapeUrl($_product->getProductUrl()) ?>" class="product-item-link">
+                            <?= $_helper->productAttribute($_product, $_product->getName(), 'name') ?>
+                        </a>
+                    </strong>
+                    <div class="mt-2 flex justify-between items-center">
+                        <span class="price-box text-xl font-bold text-gray-900">
+                            <?= /* @noEscape */ $block->getProductPrice($_product) ?>
+                        </span>
+                        <form data-role="tocart-form" action="<?= $escaper->escapeUrl($block->getAddToCartUrl($_product)) ?>"
+                            method="post">
+                            <?= $block->getBlockHtml('formkey') ?>
+                            <button type="submit" title="<?= $escaper->escapeHtmlAttr(__('Add to Cart')) ?>"
+                                class="action tocart primary bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                                <span>
+                                    <?= $escaper->escapeHtml(__('Add')) ?>
+                                </span>
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        <?php endforeach; ?>
+    </div>
+<?php endif; ?>

@@ -1,0 +1,6 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:Communication/etc/communication.xsd">
+    <topic name="agency.erp.order.export" request="Agency\Integration\Api\Data\OrderExportMessageInterface">
+        <handler name="agency.erp.order.export.handler" type="Agency\Integration\Model\Queue\Consumer\OrderExport" method="process"/>
+    </topic>
+</config>

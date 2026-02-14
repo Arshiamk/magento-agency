@@ -1,0 +1,52 @@
+{
+  "name": "agency/magento-demo",
+  "description": "A demo Magento repository showcasing clean architecture and integrations.",
+  "type": "project",
+  "license": "MIT",
+  "autoload": {
+    "psr-4": {
+      "Agency\\Core\\": "app/code/Agency/Core/",
+      "Agency\\Integration\\": "app/code/Agency/Integration/",
+      "Agency\\CheckoutEnhancements\\": "app/code/Agency/CheckoutEnhancements/",
+      "Magento\\Setup\\": "setup/src/Magento/Setup/"
+    },
+    "files": [
+      "app/etc/NonComposerComponentRegistration.php"
+    ]
+  },
+  "repositories": [
+        {
+            "type": "composer",
+            "url": "https://mirror.mage-os.org/"
+        }
+    ],
+  "require": {
+    "php": "~8.2.0||~8.3.0",
+    "magento/magento2-base": "*",
+    "magento/product-community-edition": "2.4.7"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "^9.5",
+    "phpstan/phpstan": "^1.10",
+    "squizlabs/php_codesniffer": "^3.7",
+    "magento/magento-coding-standard": "*"
+  },
+  "config": {
+    "sort-packages": true,
+    "allow-plugins": {
+      "dealerdirect/phpcodesniffer-composer-installer": true,
+      "magento/composer-dependency-version-audit-plugin": true,
+      "magento/composer-root-update-plugin": true,
+      "magento/inventory-composer-installer": true,
+      "magento/magento-composer-installer": true
+    }
+  },
+  "scripts": {
+    "post-install-cmd": [
+      "Magento\\Tools\\Composer\\Package\\Installer::postInstall"
+    ],
+    "post-update-cmd": [
+      "Magento\\Tools\\Composer\\Package\\Installer::postUpdate"
+    ]
+  }
+}

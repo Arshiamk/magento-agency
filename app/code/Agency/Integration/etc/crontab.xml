@@ -1,0 +1,8 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Cron:etc/crontab.xsd">
+    <group id="default">
+        <job name="agency_integration_product_import" instance="Agency\Integration\Cron\ProductImportCron" method="execute">
+            <schedule>0 1 * * *</schedule> <!-- Run daily at 1 AM -->
+        </job>
+    </group>
+</config>

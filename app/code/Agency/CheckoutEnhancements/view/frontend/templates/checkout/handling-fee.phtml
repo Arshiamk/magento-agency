@@ -1,0 +1,46 @@
+<?php
+/** @var \Magento\Framework\View\Element\Template $block */
+?>
+<div x-data="handlingFee()" class="my-4 p-4 border rounded bg-gray-50">
+    <label class="flex items-center space-x-2">
+        <input type="checkbox" x-model="enabled" @change="toggleFee" class="form-checkbox h-5 w-5 text-blue-600">
+        <span class="text-gray-700 font-medium">
+            <?= $escaper->escapeHtml(__('Add Priority Handling ($10.00)')) ?>
+        </span>
+    </label>
+
+    <div x-show="loading" class="mt-2 text-sm text-gray-500">
+        <?= $escaper->escapeHtml(__('Updating...')) ?>
+    </div>
+
+    <script>
+        function handlingFee() {
+            return {
+                enabled: false,
+                loading: false,
+                toggleFee() {
+                    this.loading = true;
+                    // Simulate API call to custom endpoint
+                    fetch('/rest/V1/agency/checkout/fee', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-Requested-With': 'XMLHttpRequest'
+                        },
+                        body: JSON.stringify({ enabled: this.enabled })
+                    })
+                        .then(response => response.json())
+                        .then(data => {
+                            this.loading = false;
+                            // Reload totals logic would go here
+                            window.dispatchEvent(new CustomEvent('reload-totals'));
+                        })
+                        .catch(() => {
+                            this.loading = false;
+                            console.error('Failed to update fee');
+                        });
+                }
+            }
+        }
+    </script>
+</div>

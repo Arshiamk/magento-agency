@@ -1,0 +1,11 @@
+type Query {
+  agencyIntegrationStatus: AgencyIntegrationStatus
+    @resolver(class: "Agency\\Integration\\Model\\Resolver\\Status")
+    @doc(description: "Get the status of Agency Integrations")
+}
+
+type AgencyIntegrationStatus {
+  erp_connection: String @doc(description: "Status of ERP Connection")
+  last_sync: String @doc(description: "Timestamp of last sync")
+  queue_status: String @doc(description: "Health status of the message queue")
+}
