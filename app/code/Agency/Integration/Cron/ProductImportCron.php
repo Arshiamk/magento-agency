@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Agency\Integration\Cron;
@@ -18,6 +19,9 @@ class ProductImportCron
     {
         $this->logger->info('Starting scheduled product import.');
         $result = $this->importer->importProducts();
-        $this->logger->info('Product import finished.', ['status' => $result->getStatus(), 'message' => $result->getMessage()]);
+        $this->logger->info(
+            'Product import finished.',
+            ['status' => $result->getStatus(), 'message' => $result->getMessage()]
+        );
     }
 }
