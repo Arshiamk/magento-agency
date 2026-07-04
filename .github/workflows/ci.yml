@@ -23,13 +23,13 @@ jobs:
         run: composer validate
 
       - name: Install dependencies
-        run: composer install --prefer-dist --no-progress
+        run: composer install --prefer-dist --no-progress --no-interaction
 
-      - name: Validated Coding Standards (PHPCS)
+      - name: Coding Standards (PHPCS, PSR-12)
         run: vendor/bin/phpcs --standard=PSR12 app/code/Agency
 
       - name: Static Analysis (PHPStan)
-        run: vendor/bin/phpstan analyse -l 1 app/code/Agency
+        run: vendor/bin/phpstan analyse --no-progress
 
       - name: Unit Tests
         run: vendor/bin/phpunit -c dev/tests/unit/phpunit.xml.dist

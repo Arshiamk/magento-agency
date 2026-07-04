@@ -4,6 +4,26 @@
 /var/
 /generated/
 /app/etc/env.php
+
+# Magento core directories restored by `composer install`
+# (deployed from magento/magento2-base)
+/lib/
+/setup/
+
+# Magento core test suites deployed by `composer install`;
+# only the unit test harness under dev/tests/unit is versioned.
+/dev/tests/acceptance/
+/dev/tests/api-functional/
+/dev/tests/config/
+/dev/tests/error_handler.php
+/dev/tests/integration/
+/dev/tests/js/
+/dev/tests/setup-integration/
+/dev/tests/static/
+/dev/tests/utils/
+/dev/tests/varnish/
+/dev/tests/unit/allure/
+
 .idea/
 .vscode/
 *.swp

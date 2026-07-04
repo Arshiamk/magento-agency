@@ -1,0 +1,10 @@
+# PHPStan configuration for the Agency modules.
+#
+# The unit test bootstrap registers Magento's generated-class autoloader so
+# generated factories (e.g. *InterfaceFactory) resolve during analysis.
+parameters:
+    level: 5
+    paths:
+        - app/code/Agency
+    bootstrapFiles:
+        - dev/tests/unit/framework/bootstrap.php

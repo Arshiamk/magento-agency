@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+/**
+ * PHPUnit configuration for the Agency module unit test suite.
+ *
+ * Scoped to app/code so CI runs the project's own tests rather than the
+ * full Magento core suite. The bootstrap reuses Magento's unit test
+ * framework (generated factory/extension-attribute autoloading).
+ */
+-->
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/9.3/phpunit.xsd"
+         colors="true"
+         columns="max"
+         beStrictAboutTestsThatDoNotTestAnything="false"
+         bootstrap="./framework/bootstrap.php">
+    <coverage>
+        <include>
+            <directory suffix=".php">../../../app/code/Agency</directory>
+        </include>
+        <exclude>
+            <directory>../../../app/code/Agency/*/Test</directory>
+        </exclude>
+    </coverage>
+    <testsuites>
+        <testsuite name="Agency_Unit_Tests">
+            <directory>../../../app/code/*/*/Test/Unit</directory>
+        </testsuite>
+    </testsuites>
+    <php>
+        <includePath>.</includePath>
+        <ini name="memory_limit" value="-1"/>
+        <ini name="date.timezone" value="America/Chicago"/>
+        <ini name="xdebug.max_nesting_level" value="200"/>
+    </php>
+    <listeners>
+        <listener class="Magento\Framework\TestFramework\Unit\Listener\ReplaceObjectManager"/>
+    </listeners>
+</phpunit>
