@@ -1,6 +1,6 @@
 {
   "name": "agency/magento-demo",
-  "description": "A demo Magento repository showcasing clean architecture and integrations.",
+  "description": "Magento Open Source 2.4.7 reference project demonstrating custom module architecture and simulated ERP/PIM integration patterns.",
   "type": "project",
   "license": "MIT",
   "autoload": {
@@ -41,12 +41,12 @@
       "magento/magento-composer-installer": true
     }
   },
-  "scripts": {
-    "post-install-cmd": [
-      "Magento\\Tools\\Composer\\Package\\Installer::postInstall"
-    ],
-    "post-update-cmd": [
-      "Magento\\Tools\\Composer\\Package\\Installer::postUpdate"
-    ]
+  "extra": {
+    "magento-force": "override",
+    "magento-deploy-ignore": {
+      "magento/magento2-base": [
+        "/dev/tests/unit/phpunit.xml.dist"
+      ]
+    }
   }
 }

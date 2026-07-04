@@ -9,8 +9,16 @@ use Agency\Integration\Api\Data\IntegrationResultInterfaceFactory;
 use Agency\Integration\Api\ProductImportInterface;
 use Agency\Integration\Model\Erp\Client;
 use Magento\Catalog\Api\ProductRepositoryInterface;
-use Magento\Catalog\Model\ProductFactory; // Use Factory to create new products
+use Magento\Catalog\Model\ProductFactory;
 use Psr\Log\LoggerInterface;
+
+/**
+ * Imports the PIM product feed, creating or updating simple products.
+ *
+ * Existing products are matched by SKU; new SKUs are created with sane
+ * defaults (default attribute set, main website, catalog+search
+ * visibility) before name, price and stock data are applied.
+ */
 
 class ProductImporter implements ProductImportInterface
 {

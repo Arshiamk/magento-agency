@@ -25,7 +25,8 @@ class OrderExport
 
             if ($result->getStatus() === 'error') {
                 $this->logger->error(sprintf('Order export failed for ID %d: %s', $orderId, $result->getMessage()));
-                // In a real scenario, we might throw an exception to trigger a retry if using AMQP
+                // Rethrowing here would requeue the message for retry on an
+                // AMQP connection; the demo logs and acknowledges instead.
             } else {
                 $this->logger->info(sprintf('Order export successful for ID %d', $orderId));
             }

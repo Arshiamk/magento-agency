@@ -33,10 +33,15 @@ class OrderPublisher implements OrderSyncInterface
                 'total' => $order->getGrandTotal(),
                 'currency' => $order->getOrderCurrencyCode(),
                 'items' => [],
-                'billing_address' => $order->getBillingAddress()->toArray(),
+                'billing_address' => $this->extractBillingAddress($order),
             ];
 
-            foreach ($order->getAllVisibleItems() as $item) {
+            foreach ($order->getItems() as $item) {
+                // Skip child items (e.g. simples belonging to a configurable);
+                // the ERP receives the purchasable line items only.
+                if ($item->getParentItemId() !== null) {
+                    continue;
+                }
                 $payload['items'][] = [
                     'sku' => $item->getSku(),
                     'qty' => $item->getQtyOrdered(),
@@ -65,7 +70,6 @@ class OrderPublisher implements OrderSyncInterface
             }
 
             return $result;
-
         } catch (\Exception $e) {
             $this->logger->error('Order Sync Exception: ' . $e->getMessage());
 
@@ -77,5 +81,31 @@ class OrderPublisher implements OrderSyncInterface
             ]);
             return $result;
         }
+    }
+
+    /**
+     * Map the billing address onto the flat structure expected by the ERP.
+     *
+     * @param \Magento\Sales\Api\Data\OrderInterface $order
+     * @return array|null
+     */
+    private function extractBillingAddress(\Magento\Sales\Api\Data\OrderInterface $order): ?array
+    {
+        $address = $order->getBillingAddress();
+        if ($address === null) {
+            return null;
+        }
+
+        return [
+            'firstname' => $address->getFirstname(),
+            'lastname' => $address->getLastname(),
+            'company' => $address->getCompany(),
+            'street' => $address->getStreet(),
+            'city' => $address->getCity(),
+            'region' => $address->getRegion(),
+            'postcode' => $address->getPostcode(),
+            'country_id' => $address->getCountryId(),
+            'telephone' => $address->getTelephone(),
+        ];
     }
 }

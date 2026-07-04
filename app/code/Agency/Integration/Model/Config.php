@@ -18,7 +18,9 @@ class Config
 
     public function getWebhookSecret(): string
     {
-        // Default secret for demo purposes if not set
+        // Falls back to a well-known demo secret so webhook signature
+        // validation can be exercised out of the box. Production
+        // deployments must set agency_integration/webhook/secret.
         return (string) ($this->scopeConfig->getValue(self::XML_PATH_WEBHOOK_SECRET) ?: 'dummy-secret-123');
     }
 }

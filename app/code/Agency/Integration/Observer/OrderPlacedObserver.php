@@ -25,7 +25,7 @@ class OrderPlacedObserver implements ObserverInterface
     {
         try {
             /** @var \Magento\Sales\Model\Order $order */
-            $order = $observer->getEvent()->getOrder();
+            $order = $observer->getEvent()->getData('order');
             $orderId = (int) $order->getId();
 
             /** @var \Agency\Integration\Api\Data\OrderExportMessageInterface $message */

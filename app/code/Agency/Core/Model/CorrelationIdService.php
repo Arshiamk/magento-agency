@@ -4,14 +4,23 @@ declare(strict_types=1);
 
 namespace Agency\Core\Model;
 
-use Magento\Framework\App\RequestInterface;
+use Magento\Framework\App\Request\Http;
 
+/**
+ * Resolves a correlation identifier for the current request.
+ *
+ * Reuses the X-Correlation-Id header when an upstream system (gateway,
+ * ERP, load balancer) already assigned one, otherwise generates a new
+ * UUID. The resolved value is attached to every log record via
+ * Agency\Core\Logger\Processor\CorrelationIdProcessor so a single
+ * transaction can be traced across services.
+ */
 class CorrelationIdService
 {
     private ?string $correlationId = null;
 
     public function __construct(
-        private readonly RequestInterface $request
+        private readonly Http $request
     ) {
     }
 
@@ -24,9 +33,11 @@ class CorrelationIdService
         return $this->correlationId;
     }
 
+    /**
+     * Generate an RFC 4122 version 4 formatted identifier.
+     */
     private function generateCorrelationId(): string
     {
-        // Simple UUID v4 generation or similar
         return sprintf(
             '%04x%04x-%04x-%04x-%04x-%04x%04x%04x',
             mt_rand(0, 0xffff),

@@ -26,8 +26,10 @@ class Config
         );
     }
 
-    public function isDebugLoggingEnabled(string $scopeType = ScopeInterface::SCOPE_STORE, ?string $scopeCode = null): bool
-    {
+    public function isDebugLoggingEnabled(
+        string $scopeType = ScopeInterface::SCOPE_STORE,
+        ?string $scopeCode = null
+    ): bool {
         return is_string($val = $this->scopeConfig->getValue(
             self::XML_PATH_DEBUG_LOGGING,
             $scopeType,

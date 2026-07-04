@@ -30,9 +30,7 @@ class ProductImporterTest extends TestCase
         $productFactoryMock = $this->getMockBuilder(ProductFactory::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $this->resultFactoryMock = $this->getMockBuilder(IntegrationResultInterfaceFactory::class)
-            ->setMethods(['create'])
-            ->getMock();
+        $this->resultFactoryMock = $this->createMock(IntegrationResultInterfaceFactory::class);
         $loggerMock = $this->createMock(LoggerInterface::class);
 
         $this->importer = new ProductImporter(
@@ -53,7 +51,7 @@ class ProductImporterTest extends TestCase
             ]);
 
         $productMock = $this->getMockBuilder(ProductInterface::class)
-            ->setMethods(['setName', 'setPrice', 'setStockData', 'save'])
+            ->addMethods(['setStockData'])
             ->getMockForAbstractClass();
 
         $this->productRepoMock->expects($this->once())

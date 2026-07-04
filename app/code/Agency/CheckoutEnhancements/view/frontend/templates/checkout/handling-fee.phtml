@@ -20,7 +20,9 @@
                 loading: false,
                 toggleFee() {
                     this.loading = true;
-                    // Simulate API call to custom endpoint
+                    // Demo endpoint: this route is not registered in this
+                    // repository. A production implementation would expose a
+                    // quote-management REST route for the fee selection.
                     fetch('/rest/V1/agency/checkout/fee', {
                         method: 'POST',
                         headers: {
@@ -32,7 +34,7 @@
                         .then(response => response.json())
                         .then(data => {
                             this.loading = false;
-                            // Reload totals logic would go here
+                            // Notify listeners so the totals block can refresh.
                             window.dispatchEvent(new CustomEvent('reload-totals'));
                         })
                         .catch(() => {

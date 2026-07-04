@@ -7,15 +7,22 @@ namespace Agency\Integration\Controller\Webhook;
 use Agency\Integration\Model\Config;
 use Magento\Framework\App\Action\HttpPostActionInterface;
 use Magento\Framework\App\CsrfAwareActionInterface;
+use Magento\Framework\App\Request\Http;
 use Magento\Framework\App\Request\InvalidRequestException;
 use Magento\Framework\App\RequestInterface;
 use Magento\Framework\Controller\Result\JsonFactory;
 use Psr\Log\LoggerInterface;
 
+/**
+ * Inbound webhook endpoint for ERP/PIM notifications.
+ *
+ * Requests are authenticated with an HMAC-SHA256 signature (X-Signature
+ * header) computed over the raw body, compared in constant time.
+ */
 class Index implements HttpPostActionInterface, CsrfAwareActionInterface
 {
     public function __construct(
-        private readonly RequestInterface $request,
+        private readonly Http $request,
         private readonly JsonFactory $resultJsonFactory,
         private readonly Config $config,
         private readonly LoggerInterface $logger
@@ -32,17 +39,18 @@ class Index implements HttpPostActionInterface, CsrfAwareActionInterface
 
             if (!$this->validateSignature($content, $signature)) {
                 $this->logger->warning('Webhook signature validation failed.');
-                return $result->setData(['success' => false, 'message' => 'Invalid Signature'])->setHttpResponseCode(401);
+                return $result->setData(['success' => false, 'message' => 'Invalid Signature'])
+                    ->setHttpResponseCode(401);
             }
 
             $data = json_decode($content, true);
             $this->logger->info('Webhook received', ['data' => $data]);
 
-            // Process payload (e.g., Update Order Status, Stock Update)
-            // For demo, we just acknowledge.
+            // This demo acknowledges valid payloads without mutating state.
+            // A production handler would dispatch the payload to dedicated
+            // processors (e.g. order status updates, stock adjustments).
 
             return $result->setData(['success' => true, 'message' => 'Received']);
-
         } catch (\Exception $e) {
             $this->logger->error('Webhook exception: ' . $e->getMessage());
             return $result->setData(['success' => false, 'message' => 'Error'])->setHttpResponseCode(500);
@@ -61,11 +69,13 @@ class Index implements HttpPostActionInterface, CsrfAwareActionInterface
 
     public function createCsrfValidationException(RequestInterface $request): ?InvalidRequestException
     {
-        return null; // Skip CSRF check for webhooks
+        // Webhooks are authenticated via the HMAC signature, not CSRF tokens.
+        return null;
     }
 
     public function validateForCsrf(RequestInterface $request): ?bool
     {
-        return true; // Skip CSRF check for webhooks
+        // Webhooks are authenticated via the HMAC signature, not CSRF tokens.
+        return true;
     }
 }

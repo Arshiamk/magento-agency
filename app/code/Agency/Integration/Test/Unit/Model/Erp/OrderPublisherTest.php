@@ -11,6 +11,7 @@ use Agency\Integration\Model\Erp\OrderPublisher;
 use Agency\Integration\Model\IntegrationResult;
 use Magento\Sales\Api\Data\OrderAddressInterface;
 use Magento\Sales\Api\Data\OrderInterface;
+use Magento\Sales\Api\Data\OrderItemInterface;
 use Magento\Sales\Api\OrderRepositoryInterface;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
@@ -29,9 +30,7 @@ class OrderPublisherTest extends TestCase
         $this->clientMock = $this->getMockBuilder(Client::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $this->resultFactoryMock = $this->getMockBuilder(IntegrationResultInterfaceFactory::class)
-            ->setMethods(['create'])
-            ->getMock();
+        $this->resultFactoryMock = $this->createMock(IntegrationResultInterfaceFactory::class);
         $loggerMock = $this->getMockBuilder(LoggerInterface::class)->getMock();
 
         $this->publisher = new OrderPublisher(
@@ -44,8 +43,15 @@ class OrderPublisherTest extends TestCase
 
     public function testSyncOrderSuccess()
     {
+        $itemMock = $this->createMock(OrderItemInterface::class);
+        $itemMock->method('getParentItemId')->willReturn(null);
+        $itemMock->method('getSku')->willReturn('SKU-1');
+        $itemMock->method('getQtyOrdered')->willReturn(2.0);
+        $itemMock->method('getPrice')->willReturn(19.99);
+
         $orderMock = $this->getMockBuilder(OrderInterface::class)->getMock();
         $orderMock->method('getIncrementId')->willReturn('100001');
+        $orderMock->method('getItems')->willReturn([$itemMock]);
         $orderMock->method('getBillingAddress')->willReturn(
             $this->getMockBuilder(OrderAddressInterface::class)->getMock()
         );
@@ -57,6 +63,11 @@ class OrderPublisherTest extends TestCase
 
         $this->clientMock->expects($this->once())
             ->method('postOrder')
+            ->with($this->callback(function (array $payload): bool {
+                return $payload['increment_id'] === '100001'
+                    && count($payload['items']) === 1
+                    && $payload['items'][0]['sku'] === 'SKU-1';
+            }))
             ->willReturn(['success' => true, 'erp_id' => '123']);
 
         // Mock Factory

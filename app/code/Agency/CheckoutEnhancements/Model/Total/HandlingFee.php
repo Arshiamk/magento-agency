@@ -8,8 +8,18 @@ use Magento\Quote\Model\Quote;
 use Magento\Quote\Model\Quote\Address\Total;
 use Magento\Quote\Model\Quote\Address\Total\AbstractTotal;
 
+/**
+ * Custom quote total that applies a flat handling fee to larger carts.
+ *
+ * The threshold and amount are fixed for the demo; a production
+ * implementation would source both from store configuration and/or a
+ * quote extension attribute set by the customer during checkout.
+ */
 class HandlingFee extends AbstractTotal
 {
+    private const SUBTOTAL_THRESHOLD = 100.00;
+    private const FEE_AMOUNT = 10.00;
+
     public function __construct()
     {
         $this->setCode('handling_fee');
@@ -22,11 +32,9 @@ class HandlingFee extends AbstractTotal
     ) {
         parent::collect($quote, $shippingAssignment, $total);
 
-        // Simple logic: If subtotal > 100, add $10 handling fee
-        // In reality, this would be driven by extension attributes or user selection
         $subtotal = $total->getTotalAmount('subtotal');
-        if ($subtotal > 100) {
-            $fee = 10.00;
+        if ($subtotal > self::SUBTOTAL_THRESHOLD) {
+            $fee = self::FEE_AMOUNT;
 
             $total->setTotalAmount('handling_fee', $fee);
             $total->setBaseTotalAmount('handling_fee', $fee);
@@ -34,8 +42,8 @@ class HandlingFee extends AbstractTotal
             $total->addTotalAmount('grand_total', $fee);
             $total->addBaseTotalAmount('grand_total', $fee);
 
-            $quote->setHandlingFee($fee);
-            $quote->setBaseHandlingFee($fee);
+            $quote->setData('handling_fee', $fee);
+            $quote->setData('base_handling_fee', $fee);
         }
 
         return $this;
@@ -46,7 +54,7 @@ class HandlingFee extends AbstractTotal
         return [
             'code' => $this->getCode(),
             'title' => __('Handling Fee'),
-            'value' => $total->getHandlingFee()
+            'value' => $total->getTotalAmount($this->getCode())
         ];
     }
 }
